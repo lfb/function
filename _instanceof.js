@@ -1,5 +1,6 @@
 /**
  * 模拟实现 instanceof 操作符
+ *
  * @param L
  * @param R
  * @return {boolean}
