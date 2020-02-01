@@ -15,7 +15,6 @@ Function.prototype._call = function (context) {
   if (typeof this !== 'function') {
     throw new Error('需要函数调用')
   }
-
   // 判断一下传入绑定的 this 是否为 null
   context = context || window
   // 把调用的函数赋给绑定对象
@@ -39,9 +38,29 @@ Function.prototype._call = function (context) {
     result = context._fn()
   }
 
+  // 删除方法
   delete context._fn
 
+  // 返回函数调用结果
   return result
+}
+
+/**
+ * ES6 写法
+ * @param context
+ * @param args
+ * @return {*}
+ * @private
+ */
+Function.prototype._call2 = function (context, ...args) {
+  if (typeof this !== 'function') {
+    throw new Error('需要函数调用')
+  }
+
+  context = context || window
+  context._fn = this
+
+  return context._fn(...args)
 }
 
 var name = 'lynn'
@@ -55,3 +74,4 @@ function foo(age) {
 }
 
 foo._call(o, 1024) // bob, 1024
+foo._call2(o, 1024) // bob, 1024
