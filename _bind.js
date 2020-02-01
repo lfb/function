@@ -9,7 +9,8 @@
  *    3.1.普通函数调用，this 绑定传入的对象，同时此函数还能传入参数
  *    3.2.new 操作符构造函数调用，此时 this 绑定失效，同时此函数还能传入参数
  * 4. 注意一点，可以使用一个技巧：使用一个内部函数实现继承方式，优化代码
- * @param context
+ *
+ * @param context 绑定的上下文对象
  * @return {function(): *}
  */
 Function.prototype._bind = function (context) {
@@ -43,8 +44,8 @@ Function.prototype._bind = function (context) {
 
 /**
  * 原理不变，ES6 方法实现
- * @param context
- * @param args
+ * @param context 绑定的上下文对象
+ * @param args 函数参数
  * @return {function(): *}
  */
 Function.prototype._bind2 = function (context, ...args) {

@@ -8,9 +8,8 @@
  * 3. 将步骤1新创建的对象作为this的上下文 ；
  * 4. 如果该函数没有返回对象，则返回this。
  *
- * @param Constructor
- * @return {*}
- * @private
+ * @param Constructor 构造函数
+ * @return 返回一个对象
  */
 function _new(Constructor) {
   // 步骤1
@@ -29,9 +28,9 @@ function _new(Constructor) {
 
 /**
  * 原理不变，ES6 实现写法
- * @param Constructor
- * @param args
- * @private
+ *
+ * @param Constructor 构造函数
+ * @param args 构造函数的参数
  */
 function _new2(Constructor, ...args) {
   var obj = {}

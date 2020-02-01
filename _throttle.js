@@ -16,6 +16,7 @@
  *
  * @param fn 执行的回调函数
  * @param delay 设置的触发时间
+ * @return 返回一个函数
  * @private
  */
 function _throttle(fn, delay) {
@@ -62,6 +63,7 @@ function _throttle2(fn, delay) {
  *
  * @param fn 执行的回调函数
  * @param delay 设置的触发时间
+ * @return 返回一个函数
  * @private
  */
 function _throttle3(fn, delay) {

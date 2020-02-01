@@ -8,7 +8,7 @@
  * - 再处理一下传入的参数，传入 context._fn() 参数进行调用
  * - 最后删除 _fn 方法，返回结果
  *
- * @param context
+ * @param context 绑定的上下文对象
  * @return 函数调用的结果
  */
 Function.prototype._call = function (context) {
@@ -51,6 +51,9 @@ Function.prototype._call = function (context) {
 
 /**
  * 没有注释版本，方便回忆与查看
+ *
+ * @param context 绑定的上下文对象
+ * @return 函数调用的结果
  */
 Function.prototype._call2 = function (context) {
   if (typeof this !== 'function') {
@@ -76,9 +79,10 @@ Function.prototype._call2 = function (context) {
 
 /**
  * 原理不变，使用 ES6 实现
- * @param context
- * @param args
- * @return {*}
+ *
+ * @param context 绑定的上下对象
+ * @param args 函数参数
+ * @return 函数调用的结果
  */
 Function.prototype._call3 = function (context, ...args) {
   if (typeof this !== 'function') {

@@ -2,9 +2,9 @@
  * 模拟实现 instanceof 操作符
  * instanceof 运算符用于检测构造函数的 prototype 属性是否出现在某个实例对象的原型链上
  *
- * @param L
- * @param R
- * @return {boolean}
+ * @param L 实例对象
+ * @param R 构造函数
+ * @return L 实例对象的的原型链是否出现在 R 构造函数的 prototype 上
  * @private
  */
 function _instanceof(L, R) {

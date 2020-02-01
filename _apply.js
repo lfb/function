@@ -10,8 +10,8 @@
  * - 再处理一下传入的参数，传入 context._fn() 参数进行调用
  * - 最后删除 _fn 方法，返回结果
  *
- * @param context
- * @param arr
+ * @param context 绑定的上下文对象
+ * @param arr 参数数组
  * @return {*}
  */
 Function.prototype._apply = function (context, arr) {
@@ -45,8 +45,8 @@ Function.prototype._apply = function (context, arr) {
 
 /**
  * 原理不变，使用 ES6 实现
- * @param context
- * @param arr
+ * @param context 绑定的上下文对象
+ * @param arr 参数数组
  */
 Function.prototype._apply2 = function (context, arr) {
   if (typeof this !== 'function') {
