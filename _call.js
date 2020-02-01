@@ -47,22 +47,49 @@ Function.prototype._call = function (context) {
 }
 
 /**
+ * 没有注释版本，方便回忆与查看
+ */
+Function.prototype._call2 = function (context) {
+  if (typeof this !== 'function') {
+    throw new Error('需要函数调用')
+  }
+  context = context || window
+  context._fn = this
+
+  var args = [], result
+  if (arguments.length > 1) {
+    for (var i = 1, len = arguments.length; i < len; i++) {
+      args.push('arguments[' + i + ']')
+    }
+    result = eval('context._fn(' + args + ')')
+  } else {
+    result = context._fn()
+  }
+
+  delete context._fn
+  return result
+}
+
+
+/**
  * ES6 写法
  * @param context
  * @param args
  * @return {*}
- * @private
  */
-Function.prototype._call2 = function (context, ...args) {
+Function.prototype._call3 = function (context, ...args) {
   if (typeof this !== 'function') {
     throw new Error('需要函数调用')
   }
 
   context = context || window
   context._fn = this
-  return context._fn(...args)
-}
 
+  const result = context._fn(...args)
+  delete context._fn
+
+  return result
+}
 
 /**
  * 测试
@@ -79,4 +106,5 @@ function foo(age) {
 }
 
 foo._call(o, 1024) // bob, 1024
-foo._call2(o, 1024) // bob, 1024
+foo._call2(o, 2048) // bob, 1024
+foo._call3(o, 666) // bob, 1024
