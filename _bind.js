@@ -45,7 +45,7 @@ Function.prototype._bind = function (context) {
  * 原理不变，ES6 方法实现
  * @param context
  * @param args
- * @return {F}
+ * @return {_fn}
  */
 Function.prototype._bind2 = function (context, ...args) {
   if (typeof this !== 'function') {
@@ -55,7 +55,10 @@ Function.prototype._bind2 = function (context, ...args) {
   context = context || window
   const _this = this
 
-  return function F() {
+  function F() {
+  }
+
+  var _fn = function () {
     const bindArgs = [...arguments]
 
     if (this instanceof F) {
@@ -64,6 +67,10 @@ Function.prototype._bind2 = function (context, ...args) {
       return _this.apply(context, args.concat(bindArgs))
     }
   }
+  F.prototype = this.prototype
+  _fn.prototype = new F()
+
+  return _fn
 }
 
 
@@ -121,5 +128,4 @@ console.log(fn4Obj)
  16
  mama
  foo {}
- *
  */
