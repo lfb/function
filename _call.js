@@ -106,5 +106,5 @@ function foo(age) {
 }
 
 foo._call(o, 1024) // bob, 1024
-foo._call2(o, 2048) // bob, 1024
-foo._call3(o, 666) // bob, 1024
+foo._call2(o, 2048) // bob, 2048
+foo._call3(o, 666) // bob, 666
