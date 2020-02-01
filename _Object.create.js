@@ -1,7 +1,7 @@
 /**
  * 模拟实现 Object.create() 方法
  *
- * Object.create()方法创建一个新对象，使用现有的对象来提供新创建的对象的__proto__
+ * Object.create() 方法创建一个新对象，使用现有的对象来提供新创建的对象的 __proto__
  *
  * @param proto
  * @return {*}
@@ -36,6 +36,7 @@ function Child(name, age) {
   this.age = age
 }
 
+// 使用_ObjectCreate 方法
 Child.prototype = _ObjectCreate(Parent.prototype)
 
 var o = new Child('lynn', 16)
@@ -47,6 +48,8 @@ o.getName() // lynn
 console.log(o instanceof Child) // true
 console.log(o instanceof Parent) // true
 console.log(o instanceof Object) // true
+console.log(o instanceof Function) // false
+console.log(Child instanceof Function) // true
 
 
 
