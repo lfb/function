@@ -45,7 +45,7 @@ Function.prototype._bind = function (context) {
  * 原理不变，ES6 方法实现
  * @param context
  * @param args
- * @return {_fn}
+ * @return {function(): *}
  */
 Function.prototype._bind2 = function (context, ...args) {
   if (typeof this !== 'function') {
@@ -60,13 +60,9 @@ Function.prototype._bind2 = function (context, ...args) {
 
   var _fn = function () {
     const bindArgs = [...arguments]
-
-    if (this instanceof F) {
-      return new _this(...args, ...arguments)
-    } else {
-      return _this.apply(context, args.concat(bindArgs))
-    }
+    return _this.apply(this instanceof F ? this : context, args.concat(bindArgs))
   }
+
   F.prototype = this.prototype
   _fn.prototype = new F()
 
