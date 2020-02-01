@@ -20,4 +20,4 @@
 
 
 ## License
-MIT，持续更新。
+[MIT](https://github.com/LFB/_fn/blob/master/LICENSE)，持续更新。
