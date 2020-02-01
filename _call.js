@@ -19,6 +19,9 @@ Function.prototype._call = function (context) {
   // 判断一下传入绑定的 this 是否为 null
   context = context || window
   // 把调用的函数赋给绑定对象
+  // 说说这里为什么 this 是指调用的函数
+  // 我们知道，函数是一等公民，其实函数也是一个对象，
+  // 既然使用对象调用方法，那么 this 的绑定就是指向该对象，恰好这个对象是个函数
   context._fn = this
 
   var args = [], result
@@ -72,7 +75,7 @@ Function.prototype._call2 = function (context) {
 
 
 /**
- * ES6 写法
+ * 原理不变，使用 ES6 实现
  * @param context
  * @param args
  * @return {*}
@@ -108,3 +111,4 @@ function foo(age) {
 foo._call(o, 1024) // bob, 1024
 foo._call2(o, 2048) // bob, 2048
 foo._call3(o, 666) // bob, 666
+
