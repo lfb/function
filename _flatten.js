@@ -1,8 +1,8 @@
 /**
- * 递归
+ * 数组扁平化，递归实现
  *
- * @param array
- * @return {Array}
+ * @param array 需要扁平化的多维数组
+ * @return {Array} 返回新的一维数组
  * @private
  */
 function _flatten(array) {
@@ -21,9 +21,10 @@ function _flatten(array) {
 }
 
 /**
- * toString 如果数组全是数字的情况下
+ * 数组扁平化，toString 如果数组全是数字的情况下
  *
- * @param array
+ * @param array 需要扁平化的多维数组
+ * @return {Array} 返回新的一维数组
  * @private
  */
 function _flatten2(array) {
@@ -33,10 +34,10 @@ function _flatten2(array) {
 }
 
 /**
- * reduce 实现
+ * 使用 reduce 实现数组扁平化
  *
- * @param array
- * @return {*}
+ * @param array 需要扁平化的多维数组
+ * @return {Array} 返回新的一维数组
  * @private
  */
 function _flatten3(array) {
@@ -47,10 +48,10 @@ function _flatten3(array) {
 
 
 /**
- * 使用ES6 拓展符实现
+ * 使用ES6 拓展符实现数组扁平化
  *
- * @param array
- * @return {*|*[]}
+ * @param array 需要扁平化的多维数组
+ * @return {Array} 返回新的一维数组
  * @private
  */
 function _flatten4(array) {
@@ -60,6 +61,10 @@ function _flatten4(array) {
   return array
 }
 
+/**
+ * 测试
+ * @type {*[]}
+ */
 var arr = [1, [2, 3, [4, 5, 6]]]
 console.log(_flatten(arr))
 console.log(_flatten2(arr))

@@ -207,6 +207,9 @@ function _unique10(array) {
   return array.filter(item => !map.has(item) && map.set(item, 1))
 }
 
+/**
+ * 测试
+ */
 console.log(_unique([1, '1', 2, 3, 3, 22, 2]))
 console.log(_unique2([1, '1', 2, 3, 3, 22, 2]))
 console.log(_unique3([1, '1', 2, 3, 3, 22, 2]))
