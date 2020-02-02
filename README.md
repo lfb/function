@@ -16,6 +16,9 @@
 3. [求数组的最大值或最小值](_array_max_value.js)
 4. [模拟实现数组查询 findIndex 方法](_findIndex.js)
 
+## 实用方法
+1. [实现深浅拷贝](_clone.js)
+
 ## 性能优化
 1. [实现防抖](_debounce.js)
 2. [实现节流](_throttle.js)
