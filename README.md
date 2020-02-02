@@ -10,15 +10,15 @@
 5. [模拟实现 instanceof 操作符](_instanceof.js)
 6. [模拟实现 Object.create() 方法](_Object.create.js)
 
-## 性能优化
-1. [实现防抖](_debounce.js)
-2. [实现节流](_throttle.js)
-
 ## 数组方法
 1. [实现数组去重各种方法](_unique.js)
 2. [实现数组扁平化各种方法](_flatten.js)
-2. [求数组的最大值或最小值](_array_max_value.js)
+3. [求数组的最大值或最小值](_array_max_value.js)
+4. [模拟实现数组查询 findIndex 方法](_findIndex.js)
 
+## 性能优化
+1. [实现防抖](_debounce.js)
+2. [实现节流](_throttle.js)
 
 ## License
 [MIT](https://github.com/LFB/_fn/blob/master/LICENSE)，持续更新。
