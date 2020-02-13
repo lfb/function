@@ -1,6 +1,18 @@
+/**
+ * 定义响应式
+ *
+ * @param obj 对象
+ * @param key 对象key
+ * @param val 对象的键值
+ */
 function defineReactive(obj, key, val) {
   const dep = new Dep()
 
+  /**
+   * @param obj 对象
+   * @param key 对象的key
+   * @param descriptor 描述符
+   */
   Object.defineProperty(obj, key, {
     configurable: true,
     enumerable: true,
