@@ -27,5 +27,8 @@
 1. [实现防抖](_debounce.js)
 2. [实现节流](_throttle.js)
 
+## Vue模拟实现
+1. [响应式原理](_reactive.js)
+
 ## License
 [MIT](https://github.com/LFB/_fn/blob/master/LICENSE)，持续更新。
