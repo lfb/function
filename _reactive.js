@@ -14,13 +14,17 @@ function defineReactive(obj, key, val) {
    * @param descriptor 描述符
    */
   Object.defineProperty(obj, key, {
+    // 是否可以删除修改
     configurable: true,
+    // 是否可以枚举
     enumerable: true,
+    // 读取对象属性的时候触发
     get: function reactiveGetter() {
       // 收集依赖：Watcher
       dep.addSub(Dep.target)
       return val
     },
+    // 设置对象属性值的时候触发
     set: function reactiveSetter(newVal) {
       if (newVal !== val) {
         val = newVal
@@ -31,7 +35,14 @@ function defineReactive(obj, key, val) {
   })
 }
 
+/**
+ * 观察者
+ * @param obj
+ */
 function observer(obj) {
+  if(!obj && typeof obj !== 'object'){
+    return
+  }
   // Object.keys 返回一个key数组，不包含原型上的属性
   // for-in 可能会返回原型上的方法
   Object.keys(obj).forEach(key => {
