@@ -96,7 +96,7 @@ class Vue {
     this._data = options.data
     observer(this._data)
     new Watcher()
-    // 模拟首次render function, 触发依赖
+    // 模拟首次 render function 渲染, 读取对象的值，收集依赖
     console.log('render ~', this._data.name)
   }
 }
@@ -107,5 +107,5 @@ const vm = new Vue({
   }
 })
 
-
+// 触发依赖，通知更新
 vm._data.name = '林峰'
