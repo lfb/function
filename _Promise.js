@@ -1,12 +1,15 @@
-
 try {
+    // 测试
+    // npm i -g promises-aplus-tests
+    // promises-aplus-tests Promise.js
+
     module.exports = BoPromise
 } catch (e) {
     console.log(e)
 }
 
 var PENDING = 'pending'
-var RESOLVED = 'resolved'
+var FULFILLED = 'fulfilled'
 var REJECTED = 'rejected'
 
 /**
@@ -18,16 +21,16 @@ function BoPromise(executor) {
     var self = this
     // promise 当前状态
     self.status = PENDING
-
     // promise 的值
     self.data = null
     // promise 的 resolve 时的回调函数集，
     // 因为 promise 结束之前有可能有多个回调添加到它的上面
-    self.onResolvedCallback = []
+    self.onFulfilledCallback = []
     // promise 的 reject 的回调函数集，
     // 因为 promise 结束之前有可能有多个回调添加到它的上面
     self.onRejectedCallback = []
 
+    // 定义 resolve 函数
     function resolve(value) {
         if (value instanceof BoPromise) {
             return value.then(resolve, reject)
@@ -35,11 +38,12 @@ function BoPromise(executor) {
         // 异步执行所有的回调函数
         setTimeout(function () {
             if (self.status === PENDING) {
-                self.status = RESOLVED
+                // 异步任务成功，把结果赋值给 value
                 self.data = value
-                // self.onResolvedCallback.forEach(cb => cb(value))
-                for (var i = 0; i < self.onResolvedCallback.length; i++) {
-                    self.onResolvedCallback[i](value)
+                // 当前状态切换为 resolved
+                self.status = FULFILLED
+                for (var i = 0; i < self.onFulfilledCallback.length; i++) {
+                    self.onFulfilledCallback[i](value)
                 }
             }
         })
@@ -49,9 +53,9 @@ function BoPromise(executor) {
         // 异步执行所有的回调函数
         setTimeout(function () {
             if (self.status === PENDING) {
-                self.status = REJECTED
+                // 异步任务失败，把结果赋值给 value
                 self.data = reason
-                // self.onRejectedCallback.forEach(cb => cb(reason))
+                self.status = REJECTED
                 for (var j = 0; j < self.onRejectedCallback.length; j++) {
                     self.onRejectedCallback[j](reason)
                 }
@@ -59,8 +63,9 @@ function BoPromise(executor) {
         })
     }
 
-    // executor 执行函数
     try {
+        // executor 执行函数
+        // 把 resolve 和 reject 能力赋予执行器
         executor(resolve, reject)
     } catch (err) {
         reject(err)
@@ -70,9 +75,11 @@ function BoPromise(executor) {
 
 function resolvePromise(promise2, x, resolve, reject) {
     var then
+    // 这个标识，是为了确保 resolve、reject 不要被重复执行
     var thenCalledOrThrow = false
 
     // 对标准2.3.2节
+    // 决议程序规范：如果 resolve 结果和 promise2相同则reject，这是为了避免死循环
     if (promise2 === x) {
         return reject(new TypeError('Chaining cycle detected for promise!'))
     }
@@ -87,31 +94,41 @@ function resolvePromise(promise2, x, resolve, reject) {
             x.then(resolve, reject)
         }
 
-        return false
+        return
     }
 
     // 对标准2.3.2节
+    // 决议程序规范：如果x是一个对象或者函数，则需要额外处理下
     if ((x !== null) && ((typeof x === 'object') || typeof x === 'function')) {
         try {
+            // 首先是看它有没有 then 方法（是不是 thenable 对象）
+            // 如果是 thenable 对象，则将promise的then方法指向x.then。
             then = x.then
-
+            // 如果 then 是是一个函数，那么用x为this来调用它，
+            // 第一个参数为 resolvePromise，第二个参数为 rejectPromise
             if (typeof then === 'function') {
                 then.call(
                     x,
                     function rs(y) {
+                        // 如果已经被 resolve/reject 过了，那么直接 return
                         if (thenCalledOrThrow) {
-                            return false
+                            return
                         }
                         thenCalledOrThrow = true
+
+                        // 进入决议程序（递归调用自身）
                         return resolvePromise(promise2, y, resolve, reject)
                     }, function rj(r) {
+
+                        // 这里 thenCalledOrThrow 用法和上面意思一样
                         if (thenCalledOrThrow) {
-                            return false
+                            return
                         }
                         thenCalledOrThrow = true
                         return reject(r)
                     })
             } else {
+                // 如果then不是function，用x为参数执行promise
                 resolve(x)
             }
         } catch (e) {
@@ -121,33 +138,37 @@ function resolvePromise(promise2, x, resolve, reject) {
             return reject(e)
         }
     } else {
+        // 如果x不是一个object或者function，用x为参数执行promise
         resolve(x)
     }
 }
 
 /**
- * then 方法
- * @param onResolved 成功回调方法
+ * then 方法接收两个函数作为入参（可选）
+ *
+ * @param onFulfilled 成功回调方法
  * @param onRejected 失败回调方法
  */
-BoPromise.prototype.then = function (onResolved, onRejected) {
+BoPromise.prototype.then = function (onFulfilled, onRejected) {
+    // 依然是保存 this
     var self = this
     var promise2 = null
 
-    // then 的参数需要是function，如果传入不是函数，则需要重新默认函数处理
-    onResolved = typeof onResolved === 'function' ? onResolved : function (value) {
+    // 注意，onFulfilled 和 onRejected必须是函数；如果不是，我们此处用一个透传来兜底
+    onFulfilled = typeof onFulfilled === 'function' ? onFulfilled : function (value) {
         return value
     }
     onRejected = typeof onRejected === 'function' ? onRejected : function (reason) {
         throw reason
     }
 
-    if (self.status === RESOLVED) {
+    // 判断是否是 resolved 状态
+    if (self.status === FULFILLED) {
         return promise2 = new BoPromise(function (resolve, reject) {
-            // 异步执行 onResolved
+            // 异步执行 onFulfilled
             setTimeout(function () {
                 try {
-                    var x = onResolved(self.data)
+                    var x = onFulfilled(self.data)
                     resolvePromise(promise2, x, resolve, reject)
                     resolve(x)
                 } catch (e) {
@@ -180,9 +201,9 @@ BoPromise.prototype.then = function (onResolved, onRejected) {
         // 这里之所以没有异步执行，是因为这些函数必然会被resolve或reject调用，
         // 而resolve或reject函数里的内容已是异步执行，构造函数里的定义
         return promise2 = new BoPromise(function (resolve, reject) {
-            self.onResolvedCallback.push(function (value) {
+            self.onFulfilledCallback.push(function (value) {
                 try {
-                    var x = onResolved(value)
+                    var x = onFulfilled(value)
                     resolvePromise(promise2, x, resolve, reject)
                 } catch (e) {
                     reject(e)
@@ -205,6 +226,12 @@ BoPromise.prototype.then = function (onResolved, onRejected) {
 }
 
 
+/**
+ * catch 方法可以用来进行异常捕获
+ *
+ * @param onRejected
+ * @return {BoPromise|BoPromise}
+ */
 BoPromise.prototype.catch = function (onRejected) {
     return this.then(null, onRejected)
 }
@@ -219,6 +246,12 @@ BoPromise.deferred = BoPromise.defer = function () {
 }
 
 
+/**
+ * BoPromise.resolve(value) 方法返回一个以给定值解析后的 Promise 实例对象
+ *
+ * @param parameter
+ * @return {BoPromise|*}
+ */
 BoPromise.resolve = function (parameter) {
     if (parameter in BoPromise) {
         return parameter
@@ -228,56 +261,65 @@ BoPromise.resolve = function (parameter) {
     })
 }
 
+// 和 BoPromise 同理
 BoPromise.reject = function (reason) {
     return new Promise(function (resolve, reject) {
         reject(reason)
     })
 }
 
-BoPromise.all = function (promiseList) {
+/**
+ * BoPromise.all(iterable) 返回一个 Promise 实例，
+ * 此实例在 iterable 参数内的所有 Promise 实例都"完成"，（resolved）或者参数不包含 Promise 实例时完成回调 resolve
+ * 如果参数中的 Promise 实例有一个失败（rejected）,则此实例回调失败（reject），失败原因是第一个Promise 实例失败的原因。
+ *
+ * @param promiseArray
+ * @return {BoPromise}
+ */
+BoPromise.all = function (promiseArray) {
+    if (!promiseArray instanceof Array) {
+        throw new TypeError('The arguments should be an array!')
+    }
+
     return new BoPromise(function (resolve, reject) {
-        var count = 0
-        var result = []
-        var length = promiseList.length
+        try {
+            var resultArray = []
+            var length = promiseArray.length
 
-
-        if (length === 0) {
-            return resolve(result)
-        }
-
-        promiseList.forEach(function (promise, index) {
-            BoPromise.resolve(promise).then(function (value) {
-                count++
-                result[index] = value
-
-                if (count === length) {
-                    resolve(result)
-                }
-            }, function (reason) {
-                reject(reason)
-            })
-        })
-    })
-}
-
-BoPromise.race = function (promiseList) {
-    return new BoPromise(function (resolve, reject) {
-        var length = promiseList.length
-
-        if (length === 0) {
-            return resolve()
-        } else {
             for (var i = 0; i < length; i++) {
-                BoPromise.resolve(promiseList[i]).then(function (value) {
-                    return resolve(value)
-                }, function (reason) {
-                    return reject(reason)
-                })
+                promiseArray[i].then(function (data) {
+                    resultArray.push(data)
+
+                    if (resultArray.length === length) {
+                        resolve(resultArray)
+                    }
+                }, reject)
             }
+        } catch (e) {
+            reject(e)
         }
     })
 }
 
+BoPromise.race = function (promiseArray) {
+    if (!promiseArray instanceof Array) {
+        throw new TypeError('The arguments should be an array!')
+    }
+    return new BoPromise(function (resolve, reject) {
+        try {
+            var length = promiseArray.length
+            for (var i = 0; i < length; i++) {
+                promiseArray[i].then(resolve, reject)
+            }
+
+        } catch (e) {
+            reject(e)
+        }
+    })
+}
+
+// 在promise结束时，无论结果是fulfilled或者是rejected，都会执行指定的回调函数。
+// 这为在Promise是否成功完成后都需要执行的代码提供了一种方式
 BoPromise.prototype.finally = function (cb) {
     return this.then(function (value) {
         return BoPromise.resolve(cb()).then(function () {
