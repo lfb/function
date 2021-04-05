@@ -9,6 +9,7 @@
 4. [模拟实现 new 操作符](_new.js)
 5. [模拟实现 instanceof 操作符](_instanceof.js)
 6. [模拟实现 Object.create() 方法](_Object.create.js)
+7. [实现符合 Promise/A+ 规范的 Promise](_Promise.js)
 
 ## 数组方法
 1. [实现数组去重各种方法](_unique.js)
